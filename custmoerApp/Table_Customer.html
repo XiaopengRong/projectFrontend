@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      td,
+      th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+      }
+
+      tr:nth-child(even) {
+        background-color: #dddddd;
+      }
+    </style>
+
+    <script>
+      function getData() {
+        fetch("http://localhost:8080/api/v0.1/customers", {
+          mode: "no-cors"
+        })
+          .then(res => res.text())
+          .then(out => {
+            var jsonData = JSON.parse(out)
+            for (let [key, value] of Object.entries(jsonData)) {
+              if (`${key}` == "password" || `${key}` == "register" || `${key}` == "dependent") {
+                continue
+              }
+              myData.innerHTML += "<tr><td>" + `${value}` + "</td>" + "<td align='right'>" + `${value}` + "</td>" + "<td align='right'>" + `${value}` + "</td>" + "<td align='right'>" + `${value}` + "</td></tr>" + "<td align='right'>" + `${value}` + "</td></tr>" + "<td align='right'>" + `${value}` + "</td></tr>"
+            }
+          })
+          .catch(err => console.error(err))
+      }
+    </script>
+  </head>
+  <body>
+    <h2>Customers Table</h2>
+
+    <button type="button" id="customerData" onclick="getData()">Show all customers</button>
+    <table>
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Username</th>
+          <th>First name</th>
+          <th>Last name</th>
+          <th>Phone</th>
+          <th>Email</th>
+          <th>Zip</th>
+        </tr>
+      </thead>
+      <tbody id="myData"></tbody>
+    </table>
+  </body>
+</html>
