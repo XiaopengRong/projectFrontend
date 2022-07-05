@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>Customer Application</title>
     <style>
       table {
         font-family: arial, sans-serif;
@@ -21,20 +22,77 @@
     </style>
 
     <script>
-      function getData() {
-        fetch("http://localhost:8080/api/v0.1/customers", {
-          mode: "no-cors"
-        })
-          .then(res => res.text())
-          .then(out => {
-            var jsonData = JSON.parse(out)
-            for (let [key, value] of Object.entries(jsonData)) {
-              if (`${key}` == "password" || `${key}` == "register" || `${key}` == "dependent") {
-                continue
-              }
-              myData.innerHTML += "<tr><td>" + `${value}` + "</td>" + "<td align='right'>" + `${value}` + "</td>" + "<td align='right'>" + `${value}` + "</td>" + "<td align='right'>" + `${value}` + "</td></tr>" + "<td align='right'>" + `${value}` + "</td></tr>" + "<td align='right'>" + `${value}` + "</td></tr>"
+
+window.onload = function() {
+  getData();
+};   
+
+
+
+     function redirect(elementId){
+      
+     
+          fetch("http://localhost:8080/api/v01/customers/"+`${elementId}`).then(
+            response => response.json()     
+          ).then(
+            
+            data => {
+              sessionStorage.setItem("id",data.id);
+              sessionStorage.setItem("register",data.register);
+              sessionStorage.setItem("username",data.username);
+              sessionStorage.setItem("first_name",data.first_name);
+              sessionStorage.setItem("last_name",data.last_name);
+              sessionStorage.setItem("email",data.email);
+              sessionStorage.setItem("address",data.address);
+              sessionStorage.setItem("city",data.city);
+              sessionStorage.setItem("state",data.state);
+              sessionStorage.setItem("zip",data.zip);
+              sessionStorage.setItem("phone",data.phone);
+              
+              document.location.href = '\Profile_Detail.html';
+
+     
+              // document.getElementsByName('username').value = data.username;
+              // console.log(document.getElementsByName('username').value);
+
             }
-          })
+          )
+
+
+
+      
+
+     
+
+     }
+
+
+      function getData() {
+        fetch("http://localhost:8080/api/v01/customers")
+          .then(res => res.json())
+          .then(out => {
+            var temp = "";
+            out.forEach(element => {
+            
+              temp += "<tr>";
+                    temp += "<td>" + element.id + "</td>";
+                    temp += "<td>" + element.username + "</td>";
+                    temp += "<td>" + element.first_name + "</td>";
+                    temp += "<td>" + element.last_name + "</td>";
+                    temp += "<td>" + element.phone + "</td>";
+                    temp += "<td>" + element.email + "</td>";
+                    temp += "<td>" + element.zip + "</td>";
+                    temp += "<td>"  +`<button type="button" class="btn btn-lg btn-info" style= "background-color:orange;border-color:orange" onclick="redirect(${element.id})">View</button>` +"</td>";
+                    temp += "</tr>"
+
+
+              });
+              myData.innerHTML +=  temp;
+
+          }
+          
+          
+          )
           .catch(err => console.error(err))
       }
     </script>
@@ -42,7 +100,7 @@
   <body>
     <h2>Customers Table</h2>
 
-    <button type="button" id="customerData" onclick="getData()">Show all customers</button>
+    <!-- <button type="button" id="customerData" onclick="getData()">Show all customers</button> -->
     <table>
       <thead>
         <tr>
@@ -53,7 +111,9 @@
           <th>Phone</th>
           <th>Email</th>
           <th>Zip</th>
+          <th>View details</th>
         </tr>
+        
       </thead>
       <tbody id="myData"></tbody>
     </table>
